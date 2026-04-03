@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>AI Mindset — Opción 2 | TeamCook × Globant</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --accent:#2E4057; --accent-mid:#4A6080;
+  --green:#1A5C3A; --green-mid:#2A8A5A; --green-bg:#EEF6EE;
+  --dark:#2C2C2C; --mid:#555; --light:#999; --border:#E0E0E0; --bg:#F7F9F7;
+  --yellow:#FFF8E1; --yellow-bdr:#F0C040; --white:#FFF;
+  --doc-mail:#1A3A6C; --doc-report:#6C1A1A; --doc-acta:#4A1A6C;
+  --tap-min: 48px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── HEADER ─────────────────────────────────────── */
+.header {
+  background: var(--accent);
+  color: white;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.header-logo { font-size: 20px; flex-shrink: 0; }
+.header-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-sub { font-size: 11px; opacity: .7; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-badge {
+  background: rgba(255,255,255,.15);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── PROGRESS ────────────────────────────────────── */
+.progress-bar { background: rgba(255,255,255,.15); height: 4px; }
+.progress-fill { background: var(--green-mid); height: 100%; transition: width .4s ease; width: 0%; }
+
+/* ── MAIN ────────────────────────────────────────── */
+.main {
+  padding: 20px 16px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── SCREENS ─────────────────────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:translateY(0) } }
+
+/* ── STEP INDICATOR ──────────────────────────────── */
+.step-indicator {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+.step-dot {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  color: var(--light);
+  background: white;
+  flex-shrink: 0;
+  transition: all .3s;
+}
+.step-dot.active { border-color: var(--green); background: var(--green); color: white; }
+.step-dot.done   { border-color: var(--green-mid); background: var(--green-mid); color: white; }
+.step-line { flex: 1; height: 2px; background: var(--border); transition: background .3s; }
+.step-line.done { background: var(--green-mid); }
+
+/* ── SCREEN HERO ─────────────────────────────────── */
+.screen-hero { margin-bottom: 24px; }
+.step-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 6px;
+}
+.screen-hero h2 {
+  font-size: clamp(22px, 6vw, 30px);
+  font-weight: 700; color: var(--accent);
+  line-height: 1.2; margin-bottom: 10px;
+}
+.screen-desc { font-size: 15px; color: var(--mid); line-height: 1.7; }
+
+/* ── CONSIGNA ────────────────────────────────────── */
+.consigna {
+  background: var(--yellow);
+  border: 2px solid var(--yellow-bdr);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+.c-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 8px;
+}
+.c-text { font-size: 15px; font-weight: 500; color: var(--dark); line-height: 1.6; font-style: italic; }
+
+/* ── INTRO CARDS (3 steps preview) ──────────────── */
+.intro-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
+.intro-step {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.intro-step-icon { font-size: 26px; flex-shrink: 0; }
+.intro-step-title { font-size: 14px; font-weight: 600; color: var(--accent); }
+.intro-step-desc { font-size: 12px; color: var(--mid); margin-top: 2px; }
+
+/* ── DOC CARDS ───────────────────────────────────── */
+.docs-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.doc-card {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.doc-card.open { box-shadow: 0 0 0 2px var(--green); }
+.doc-card-header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--tap-min);
+}
+.doc-card-icon { font-size: 20px; flex-shrink: 0; }
+.doc-card-meta { flex: 1; }
+.doc-card-type { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .75; color: white; }
+.doc-card-title { font-size: 14px; font-weight: 600; color: white; line-height: 1.3; margin-top: 2px; }
+.doc-arrow { color: rgba(255,255,255,.8); font-size: 16px; flex-shrink: 0; transition: transform .2s; }
+.doc-card.open .doc-arrow { transform: rotate(180deg); }
+.doc-card-body {
+  padding: 0 16px;
+  font-size: 13px;
+  color: var(--dark);
+  line-height: 1.65;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .35s ease, padding .2s;
+  border-top: 0px solid rgba(0,0,0,.06);
+}
+.doc-card-body.open {
+  max-height: 1200px;
+  padding: 16px;
+  border-top-width: 1px;
+}
+.doc-field { margin-bottom: 8px; }
+.doc-field strong { font-weight: 600; color: var(--accent); font-size: 12px; display: block; margin-bottom: 2px; }
+.doc-para { margin-top: 8px; }
+
+/* ── TIMER ───────────────────────────────────────── */
+.timer-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.timer-icon { font-size: 18px; }
+.timer-text { font-size: 13px; font-weight: 500; flex: 1; }
+.timer-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px; font-weight: 700;
+  background: rgba(255,255,255,.2);
+  padding: 4px 10px; border-radius: 6px;
+}
+.timer-btn {
+  background: rgba(255,255,255,.2);
+  border: 1px solid rgba(255,255,255,.3);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  min-height: var(--tap-min);
+  min-width: 60px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── TOOL SELECTOR ───────────────────────────────── */
+.field-label { font-size: 13px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 8px; }
+.tool-selector { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.tool-btn {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--accent);
+  min-height: var(--tap-min);
+  -webkit-tap-highlight-color: transparent;
+  transition: all .15s;
+}
+.tool-btn.selected { background: var(--green); color: white; border-color: var(--green); }
+
+/* ── TEXTAREA ────────────────────────────────────── */
+.field-area { margin-bottom: 20px; }
+textarea {
+  width: 100%;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--dark);
+  resize: vertical;
+  min-height: 90px;
+  background: white;
+  -webkit-appearance: none;
+  transition: border-color .2s;
+}
+textarea:focus { outline: none; border-color: var(--green); }
+.field-hint { font-size: 12px; color: var(--light); margin-top: 6px; font-style: italic; }
+
+/* ── COPY BUTTON ─────────────────────────────────── */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  background: var(--green);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--tap-min);
+  -webkit-tap-highlight-color: transparent;
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── REVEAL BOX ──────────────────────────────────── */
+.reveal-box {
+  background: var(--green-bg);
+  border: 2px solid var(--green);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.r-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--green-mid); margin-bottom: 10px; }
+.reveal-box h3 { font-size: 20px; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+.r-why { font-size: 14px; color: var(--dark); line-height: 1.7; margin-bottom: 14px; }
+.r-key { font-size: 13px; font-weight: 600; color: var(--green); line-height: 1.6; }
+.r-key code {
+  font-family: 'DM Mono', monospace;
+  background: rgba(255,255,255,.6);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+/* ── TOOL COMPARE ────────────────────────────────── */
+.tool-compare { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+@media(min-width:600px) { .tool-compare { flex-direction: row; } .tool-compare .tool-box { flex: 1; } }
+.tool-box {
+  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid var(--border);
+  background: white;
+}
+.tool-box.highlight { border-color: var(--green); background: var(--green-bg); }
+.tb-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; color: var(--mid); }
+.tool-box.highlight .tb-label { color: var(--green); }
+.tb-name { font-size: 17px; font-weight: 700; color: var(--accent); margin-bottom: 3px; }
+.tb-tag { font-size: 12px; color: var(--mid); font-style: italic; margin-bottom: 10px; }
+.tool-box ul { list-style: none; padding: 0; }
+.tool-box ul li { font-size: 13px; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,.06); line-height: 1.5; padding-left: 18px; position: relative; }
+.tool-box ul li:last-child { border: none; }
+.tool-box.default ul li::before { content: "→"; position: absolute; left: 0; color: var(--mid); }
+.tool-box.highlight ul li::before { content: "✓"; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+
+/* ── TENSION CARDS ───────────────────────────────── */
+.tension-stack { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+.tension-item {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 13px;
+  border-left: 3px solid var(--border);
+}
+.tension-item.mail   { border-left-color: var(--doc-mail); }
+.tension-item.report { border-left-color: var(--doc-report); }
+.tension-item.acta   { border-left-color: var(--doc-acta); }
+.tension-item.conclu { border-left-color: var(--green); background: var(--green-bg); font-weight: 600; color: var(--green); }
+
+/* ── RESCATE CARDS ───────────────────────────────── */
+.rescate-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+.rc-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--green); font-weight: 500; margin-bottom: 6px; }
+.rc-q { font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.5; margin-bottom: 6px; }
+.rc-anchor { font-size: 12px; color: var(--mid); font-style: italic; line-height: 1.5; }
+
+/* ── REFLECTION ──────────────────────────────────── */
+.reflection-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+@media(min-width:600px) {
+  .reflection-stack { flex-direction: row; }
+  .r-field { flex: 1; }
+}
+.r-field label { font-size: 12px; font-weight: 600; color: var(--accent); display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+
+/* ── FINAL CARD ──────────────────────────────────── */
+.final-card {
+  background: var(--accent);
+  color: white;
+  border-radius: 12px;
+  padding: 28px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.fc-icon { font-size: 44px; margin-bottom: 14px; }
+.final-card h3 { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.final-card p { font-size: 14px; opacity: .85; line-height: 1.7; }
+
+/* ── NAV BUTTONS ─────────────────────────────────── */
+.nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  min-height: var(--tap-min);
+  min-width: 80px;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s;
+  flex: 1;
+  max-width: 220px;
+  text-align: center;
+}
+.btn:active { opacity: .75; }
+.btn-primary { background: var(--green); color: white; }
+.btn-secondary { background: white; color: var(--accent); border: 2px solid var(--border); }
+.nav-center { justify-content: center; }
+.nav-center .btn { max-width: 280px; }
+
+/* ── INFO BOX ────────────────────────────────────── */
+.info-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 8px;
+}
+.info-box-title { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+/* ── NOTEBOOK URL ────────────────────────────────── */
+.url-box {
+  background: var(--green-bg);
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.url-box-label { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 4px; }
+.url-box-url { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--accent); font-weight: 500; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">🤖</div>
+    <div>
+      <div class="header-title">AI Mindset — Dinámica de Workshop</div>
+      <div class="header-sub">La síntesis que nadie hace · Ruta IMPACT</div>
+    </div>
+  </div>
+  <div class="header-badge">Globant 2026</div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="main">
+
+  <div class="step-indicator" id="stepIndicator"></div>
+
+  <!-- ══ SCREEN 1: INTRO ══ -->
+  <div class="screen active" id="screen-1">
+    <div class="screen-hero">
+      <div class="step-label">Paso 1 de 5</div>
+      <h2>La síntesis que nadie hace</h2>
+      <p class="screen-desc">Durante el workshop trabajaron con recursos limitados bajo presión. Ahora: el mismo principio aplicado a la IA. No se trata de usar cualquier herramienta — se trata de usar la correcta para la tarea correcta.</p>
+    </div>
+
+    <div class="consigna">
+      <div class="c-label">La consigna</div>
+      <div class="c-text">"Tienen tres fuentes de información sobre un mismo tema — un mail, un reporte y un acta de reunión. Pídanle a la IA que tienen abierta que identifique los puntos de tensión o contradicción entre las tres."</div>
+    </div>
+
+    <div class="intro-steps">
+      <div class="intro-step">
+        <div class="intro-step-icon">📄</div>
+        <div>
+          <div class="intro-step-title">Leer las 3 fuentes</div>
+          <div class="intro-step-desc">Mail, reporte y acta de reunión sobre el mismo tema</div>
+        </div>
+      </div>
+      <div class="intro-step">
+        <div class="intro-step-icon">💬</div>
+        <div>
+          <div class="intro-step-title">Trabajarlo con tu IA</div>
+          <div class="intro-step-desc">Usá la herramienta que ya tenés abierta</div>
+        </div>
+      </div>
+      <div class="intro-step">
+        <div class="intro-step-icon">🔍</div>
+        <div>
+          <div class="intro-step-title">Descubrir la diferencia</div>
+          <div class="intro-step-desc">Qué herramienta era la más adecuada para esta tarea</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-primary" onclick="goTo(2)">Empezar →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: DOCUMENTOS ══ -->
+  <div class="screen" id="screen-2">
+    <div class="screen-hero">
+      <div class="step-label">Paso 2 de 5</div>
+      <h2>Las tres fuentes</h2>
+      <p class="screen-desc">Tocá cada documento para leerlo. Son sobre el mismo tema: la decisión de implementar un nuevo proceso de feedback. Notá las diferencias entre lo que dice cada fuente.</p>
+    </div>
+
+    <div class="timer-row">
+      <span class="timer-icon">⏱</span>
+      <span class="timer-text">Tiempo sugerido para leer</span>
+      <span class="timer-badge" id="timerDisplay">3:00</span>
+      <button class="timer-btn" id="timerBtn" onclick="startTimer()">▶ Iniciar</button>
+    </div>
+
+    <div class="docs-list">
+
+      <!-- DOC 1: MAIL -->
+      <div class="doc-card" id="card1" onclick="toggleDoc(1)">
+        <div class="doc-card-header" style="background:var(--doc-mail)">
+          <span class="doc-card-icon">📧</span>
+          <div class="doc-card-meta">
+            <div class="doc-card-type">Correo electrónico</div>
+            <div class="doc-card-title">Mail de la VP de Personas</div>
+          </div>
+          <span class="doc-arrow" id="arrow1">▼</span>
+        </div>
+        <div class="doc-card-body" id="body1">
+          <div class="doc-field"><strong>De:</strong> Valeria Moreno — VP of People</div>
+          <div class="doc-field"><strong>Para:</strong> Líderes de equipo — Región LATAM</div>
+          <div class="doc-field"><strong>Asunto:</strong> Nuevo proceso de feedback trimestral — implementación Q3</div>
+          <div class="doc-field"><strong>Fecha:</strong> 14 de julio, 2026</div>
+          <p class="doc-para">Equipo,</p>
+          <p class="doc-para">Luego de una revisión exhaustiva del proceso actual, hemos tomado la decisión de implementar un nuevo ciclo de feedback estructurado para todos los equipos de la región a partir del Q3.</p>
+          <p class="doc-para">El nuevo proceso incluye conversaciones 1:1 quincenales documentadas, una autoevaluación mensual por parte de cada colaborador y una revisión de desempeño trimestral a cargo del líder directo.</p>
+          <p class="doc-para">La capacitación para líderes es <strong>obligatoria</strong> y se realizará durante las primeras dos semanas de agosto. Las fechas y modalidades están siendo coordinadas con cada área.</p>
+          <p class="doc-para">Este cambio es una prioridad para la organización y esperamos una implementación completa antes del cierre del Q3.</p>
+          <p class="doc-para" style="font-style:italic;color:var(--mid)">Valeria</p>
+        </div>
+      </div>
+
+      <!-- DOC 2: REPORTE -->
+      <div class="doc-card" id="card2" onclick="toggleDoc(2)">
+        <div class="doc-card-header" style="background:var(--doc-report)">
+          <span class="doc-card-icon">📊</span>
+          <div class="doc-card-meta">
+            <div class="doc-card-type">Reporte interno</div>
+            <div class="doc-card-title">Resultados encuesta de clima — Q2</div>
+          </div>
+          <span class="doc-arrow" id="arrow2">▼</span>
+        </div>
+        <div class="doc-card-body" id="body2">
+          <div class="doc-field"><strong>Fuente:</strong> Encuesta de clima organizacional — Q2 2026</div>
+          <div class="doc-field"><strong>Muestra:</strong> 847 colaboradores, Región LATAM</div>
+          <div class="doc-field"><strong>Publicación:</strong> 1 de julio, 2026</div>
+          <p class="doc-para"><strong>Hallazgos principales:</strong></p>
+          <p class="doc-para">El 67% de los colaboradores reportó no haber tenido una conversación de feedback estructurada con su líder en los últimos 3 meses. Solo el 23% considera que el feedback que recibe es "frecuente y útil para su desarrollo".</p>
+          <p class="doc-para">El 41% de los líderes indicó <strong>"falta de tiempo"</strong> como principal barrera, seguido por <strong>"no saber cómo estructurar la conversación"</strong> (28%) y <strong>"incomodidad con el conflicto"</strong> (18%).</p>
+          <p class="doc-para">El 78% de los colaboradores recibiría positivamente un proceso más estructurado, pero el 54% advirtió que preferiría que no se convierta en una tarea administrativa adicional.</p>
+          <p class="doc-para" style="color:var(--doc-report);font-weight:600">⚠ Nota: el indicador de "sobrecarga administrativa" del equipo de líderes alcanzó su nivel más alto en 6 trimestres (72%).</p>
+        </div>
+      </div>
+
+      <!-- DOC 3: ACTA -->
+      <div class="doc-card" id="card3" onclick="toggleDoc(3)">
+        <div class="doc-card-header" style="background:var(--doc-acta)">
+          <span class="doc-card-icon">📋</span>
+          <div class="doc-card-meta">
+            <div class="doc-card-type">Acta de reunión</div>
+            <div class="doc-card-title">Reunión de líderes — 10 julio</div>
+          </div>
+          <span class="doc-arrow" id="arrow3">▼</span>
+        </div>
+        <div class="doc-card-body" id="body3">
+          <div class="doc-field"><strong>Reunión:</strong> Sync mensual de líderes de equipo</div>
+          <div class="doc-field"><strong>Fecha:</strong> 10 de julio, 2026</div>
+          <div class="doc-field"><strong>Participantes:</strong> 14 líderes de equipo, LATAM</div>
+          <p class="doc-para"><strong>Posiciones a favor:</strong> "El equipo me pide más claridad sobre cómo van, y yo tampoco tengo un sistema" (Rodrigo A., Tech Lead). "Si hay un formato claro, lo hacemos" (Daniela P., People Manager).</p>
+          <p class="doc-para"><strong>Preocupaciones planteadas:</strong> "Ya estamos al límite con las reuniones operativas — esto va a competir con el trabajo real" (Martín G., Engineering Manager). Se señaló que el plazo (fin de Q3) se percibe como "muy ajustado para hacerlo bien".</p>
+          <p class="doc-para"><strong>Sin resolución:</strong> no quedó claro si la capacitación de agosto es presencial u online, ni si habrá soporte para líderes durante la implementación.</p>
+          <p class="doc-para" style="color:var(--doc-acta);font-weight:600">Estado: ningún acuerdo formal alcanzado. Se pospuso la definición de próximos pasos.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="goTo(1)">← Atrás</button>
+      <button class="btn btn-primary" onclick="goTo(3)">Leí los tres →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: TRABAJAR CON IA ══ -->
+  <div class="screen" id="screen-3">
+    <div class="screen-hero">
+      <div class="step-label">Paso 3 de 5</div>
+      <h2>Ahora trabajalo con tu IA</h2>
+      <p class="screen-desc">Abrí la herramienta de IA que usás habitualmente y realizá la consigna. Después registrá acá qué herramienta usaste y qué obtuviste.</p>
+    </div>
+
+    <div class="consigna">
+      <div class="c-label">Copiá este prompt en tu IA</div>
+      <div class="c-text" id="promptText" style="font-size:14px">"Tengo tres fuentes de información sobre la implementación de un nuevo proceso de feedback en mi equipo: un mail de la VP de Personas que anuncia el proceso como obligatorio y prioritario, un reporte de clima que muestra que el 72% de los líderes ya está en nivel máximo de sobrecarga administrativa, y un acta de reunión donde los líderes expresaron preocupaciones pero no llegaron a ningún acuerdo. Identificá los puntos de tensión o contradicción entre estas tres fuentes."</div>
+      <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">📋 Copiar prompt</button>
+    </div>
+
+    <div class="field-area">
+      <label class="field-label">¿Qué herramienta usaste?</label>
+      <div class="tool-selector" id="toolSelector">
+        <button class="tool-btn" onclick="selectTool(this,'ChatGPT')">ChatGPT</button>
+        <button class="tool-btn" onclick="selectTool(this,'Copilot')">Copilot</button>
+        <button class="tool-btn" onclick="selectTool(this,'Gemini')">Gemini</button>
+        <button class="tool-btn" onclick="selectTool(this,'Claude')">Claude</button>
+        <button class="tool-btn" onclick="selectTool(this,'Otra')">Otra</button>
+      </div>
+    </div>
+
+    <div class="field-area">
+      <label class="field-label">¿Qué tensiones o contradicciones identificó tu IA?</label>
+      <textarea placeholder="Escribí acá lo más relevante de la respuesta que obtuviste..."></textarea>
+      <div class="field-hint">No hace falta que copies todo — solo lo que te pareció más interesante.</div>
+    </div>
+
+    <div class="field-area">
+      <label class="field-label">¿La respuesta te pareció útil? ¿Por qué?</label>
+      <textarea placeholder="Tu evaluación de la respuesta..."></textarea>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="goTo(2)">← Atrás</button>
+      <button class="btn btn-primary" onclick="goTo(4)">Ver la ideal →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: REVEAL ══ -->
+  <div class="screen" id="screen-4">
+    <div class="screen-hero">
+      <div class="step-label">Paso 4 de 5</div>
+      <h2>La herramienta que deberían haber usado</h2>
+      <p class="screen-desc">Para sintetizar y detectar contradicciones entre múltiples documentos propios, existe una herramienta construida exactamente para eso.</p>
+    </div>
+
+    <div class="reveal-box">
+      <div class="r-label">La herramienta ideal para esta tarea</div>
+      <h3>📓 NotebookLM — Google</h3>
+      <div class="r-why">NotebookLM está diseñado para trabajar sobre fuentes propias. Subís tus documentos y los convierte en una base de conocimiento consultable. A diferencia de los chatbots conversacionales, no "recuerda" el texto — <strong>lo lee cada vez, cita exactamente de qué documento saca cada afirmación y detecta contradicciones entre fuentes</strong>. Para esta tarea, esa diferencia es fundamental.</div>
+      <div class="r-key">→ Probalo ahora mismo en: <code>notebooklm.google.com</code></div>
+    </div>
+
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">¿Por qué importa la diferencia?</div>
+      <div class="tool-compare">
+        <div class="tool-box default">
+          <div class="tb-label">Lo que probablemente usaste</div>
+          <div class="tb-name">ChatGPT / Copilot</div>
+          <div class="tb-tag">Herramienta de razonamiento y generación</div>
+          <ul>
+            <li>Procesa el texto como conversación, no como documentos estructurados</li>
+            <li>No distingue de qué fuente específica viene cada afirmación</li>
+            <li>Puede mezclar información de las tres fuentes sin señalarlo</li>
+            <li>Ideal para generar, resumir y razonar sobre texto que le pasás</li>
+          </ul>
+        </div>
+        <div class="tool-box highlight">
+          <div class="tb-label">La herramienta correcta para esto</div>
+          <div class="tb-name">📓 NotebookLM</div>
+          <div class="tb-tag">Herramienta de síntesis documental con citas</div>
+          <ul>
+            <li>Trata cada documento como fuente separada e identificable</li>
+            <li>Cita exactamente de qué documento viene cada conclusión</li>
+            <li>Detecta y señala explícitamente las contradicciones entre fuentes</li>
+            <li>Permite hacer preguntas sobre el conjunto como si fuera una base de datos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="info-box-title">La tensión central que NotebookLM debería detectar</div>
+      <div class="tension-stack">
+        <div class="tension-item mail"><strong style="color:var(--doc-mail)">Mail:</strong> implementación obligatoria y prioritaria antes de fin de Q3.</div>
+        <div class="tension-item report"><strong style="color:var(--doc-report)">Reporte:</strong> los líderes están en su nivel máximo de sobrecarga en 6 trimestres.</div>
+        <div class="tension-item acta"><strong style="color:var(--doc-acta)">Acta:</strong> sin acuerdo, plazo percibido como "muy ajustado", capacitación con detalles indefinidos.</div>
+        <div class="tension-item conclu">→ Se está lanzando un proceso que requiere tiempo y energía de líderes que ya están al límite, sin los detalles operativos definidos, con un plazo que el propio equipo considera irreal.</div>
+      </div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-secondary" onclick="goTo(3)">← Atrás</button>
+      <button class="btn btn-primary" onclick="goTo(5)">Ir al rescate →</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 5: RESCATE ══ -->
+  <div class="screen" id="screen-5">
+    <div class="screen-hero">
+      <div class="step-label">Paso 5 de 5</div>
+      <h2>El rescate</h2>
+      <p class="screen-desc">Tres preguntas para conectar lo que acaban de vivir con su trabajo real. Tomá un momento para responderlas antes de la conversación grupal.</p>
+    </div>
+
+    <div class="rescate-card">
+      <div class="rc-num">Pregunta 1</div>
+      <div class="rc-q">¿Fuiste a la herramienta más conocida o a la más adecuada para esta tarea?</div>
+      <div class="rc-anchor">Ancla: tendemos a usar el recurso más familiar, no el más efectivo para la situación específica.</div>
+    </div>
+    <div class="rescate-card">
+      <div class="rc-num">Pregunta 2</div>
+      <div class="rc-q">En tu trabajo, cuando tenés información dispersa en múltiples fuentes, ¿cómo la sintetizás hoy? ¿Qué tiempo te lleva — y qué podrías hacer distinto?</div>
+      <div class="rc-anchor">Ancla: conecta AI Mindset con una práctica concreta y cotidiana de liderazgo.</div>
+    </div>
+    <div class="rescate-card">
+      <div class="rc-num">Pregunta 3</div>
+      <div class="rc-q">¿Qué criterio usarías de ahora en adelante para elegir qué herramienta usar según el tipo de tarea?</div>
+      <div class="rc-anchor">Ancla: de una herramienta específica a un principio de selección reutilizable.</div>
+    </div>
+
+    <div style="height:16px"></div>
+    <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Tu reflexión personal</div>
+
+    <div class="reflection-stack">
+      <div class="r-field">
+        <label>Lo que más me sorprendió</label>
+        <textarea placeholder="..."></textarea>
+      </div>
+      <div class="r-field">
+        <label>Lo que voy a cambiar en mi trabajo</label>
+        <textarea placeholder="..."></textarea>
+      </div>
+    </div>
+
+    <div class="final-card">
+      <div class="fc-icon">🎯</div>
+      <h3>AI Mindset en acción</h3>
+      <p>No es tener acceso a las herramientas — es saber cuál usar y cuándo. Hoy viviste la diferencia entre usar la herramienta más conocida y usar la más adecuada para la tarea. Ese criterio de selección es exactamente lo que Globant define como AI Mindset.</p>
+    </div>
+
+    <div class="url-box">
+      <div class="url-box-label">¿Querés explorar NotebookLM ahora mismo?</div>
+      <div class="url-box-url">notebooklm.google.com</div>
+    </div>
+
+    <div class="nav nav-center">
+      <button class="btn btn-secondary" onclick="goTo(4)">← Atrás</button>
+      <button class="btn btn-primary" onclick="goTo(1);resetTimer()">🔄 Reiniciar</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+let currentScreen = 1;
+const totalScreens = 5;
+let timerInterval = null;
+let timerSeconds = 180;
+
+function buildStepIndicator() {
+  const el = document.getElementById('stepIndicator');
+  el.innerHTML = '';
+  for (let i = 1; i <= totalScreens; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'step-dot' + (i < currentScreen ? ' done' : i === currentScreen ? ' active' : '');
+    dot.textContent = i;
+    el.appendChild(dot);
+    if (i < totalScreens) {
+      const line = document.createElement('div');
+      line.className = 'step-line' + (i < currentScreen ? ' done' : '');
+      el.appendChild(line);
+    }
+  }
+}
+
+function updateProgress() {
+  const pct = ((currentScreen - 1) / (totalScreens - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+function goTo(n) {
+  document.getElementById('screen-' + currentScreen).classList.remove('active');
+  currentScreen = n;
+  document.getElementById('screen-' + currentScreen).classList.add('active');
+  buildStepIndicator();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleDoc(num) {
+  const body = document.getElementById('body' + num);
+  const card = document.getElementById('card' + num);
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  card.classList.toggle('open');
+}
+
+function startTimer() {
+  if (timerInterval) return;
+  const btn = document.getElementById('timerBtn');
+  if (btn) btn.textContent = '⏸ Corriendo';
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    const m = Math.floor(timerSeconds / 60);
+    const s = timerSeconds % 60;
+    const el = document.getElementById('timerDisplay');
+    if (el) el.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      if (el) el.textContent = '¡Listo!';
+      if (btn) btn.textContent = '✓ Tiempo';
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerSeconds = 180;
+  const el = document.getElementById('timerDisplay');
+  if (el) el.textContent = '3:00';
+  const btn = document.getElementById('timerBtn');
+  if (btn) btn.textContent = '▶ Iniciar';
+}
+
+function copyPrompt() {
+  const text = document.getElementById('promptText').textContent.trim();
+  const btn = document.getElementById('copyBtn');
+
+  // Try modern clipboard API first
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copiado';
+      setTimeout(() => { btn.textContent = '📋 Copiar prompt'; }, 2500);
+    }).catch(() => fallbackCopy(text, btn));
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  // Fallback for Safari/iOS without HTTPS
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = '📋 Copiar prompt'; }, 2500);
+  } catch (e) {
+    btn.textContent = 'Seleccioná y copiá manualmente';
+    setTimeout(() => { btn.textContent = '📋 Copiar prompt'; }, 3000);
+  }
+  document.body.removeChild(ta);
+}
+
+function selectTool(btn, tool) {
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+buildStepIndicator();
+updateProgress();
+</script>
+</body>
+</html>
